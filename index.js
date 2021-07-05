@@ -24,6 +24,10 @@ client.connect(() => {
   console.log("connected database sucesfully");
 });
 
+app.get("/", (req, res) => {
+  res.send("hello");
+});
+
 // Starting Routes
 app.use("/auth", authRoutes);
 app.use("/event", event);
