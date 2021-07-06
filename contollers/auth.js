@@ -7,21 +7,39 @@ const client = require("../conifgs/db");
 
 //SignUp Function
 exports.signUp = (req, res) => {
-  const { name, email, password } = req.body; // Data from req
+  const { name, email, userName, password } = req.body; // Data from req
 
   client
     .query(`SELECT * FROM users WHERE email = '${email}';`) //Checking database for already registered email
     .then((data) => {
-      rows = data.rows;
+      var rows = data.rows;
+
+      client
+        .query(`SELECT * FROM users WHERE userName = '${userName}';`) //Checking database for already registered email
+        .then((data) => {
+          var rows1 = data.rows;
+        })
+        .catch((err) => {
+          res.status(500).json({
+            error: "Database error occurred in signUp! 1",
+          });
+        });
 
       // If email is already registered
       if (rows.length !== 0) {
         res.status(403).json({
-          error: "User already exists.",
+          error: "Email already in use.",
         });
       }
 
-      // If email is not registered then
+      // If userName is already registered
+      if (rows.length !== 0) {
+        res.status(403).json({
+          error: "userName already in use.",
+        });
+      }
+
+      // If email and username are not registered then
       else {
         //hashing password
         bcrypt.hash(password, 10, (err, hash) => {
@@ -30,10 +48,18 @@ exports.signUp = (req, res) => {
               error: "Hashing Failed in signUp",
             });
           } else {
-            let code = ["RTX7", "ARX3", "DRL6", "ADR1", "TSP8", "SFJ2", "WDP9"]; //Array of all possible prefix of code
-            code = code[Math.floor(Math.random() * 6) + 0]; //Assigning random prefix
-            count += 1;
-            let avatar = Math.floor(Math.random() * 5) + 1; //Code for user avatar
+            code = Math.floor(Math.random() * 6) + 0; //Assingning a random code for setting user profile pic
+
+            //Generating token for email, code and userName using private key
+            const token = jwt.sign(
+              {
+                email,
+                userName,
+                code,
+              },
+              process.env.PRIVATE_KEY
+            );
+
             const user = {
               name,
               email,
@@ -43,26 +69,18 @@ exports.signUp = (req, res) => {
               e3: "FALSE",
               e4: "FALSE",
               e5: "False",
-              avatar,
-              code,
+              userName,
+              token,
               // To add more event update code here.
             }; // Data of new user
 
             client
               // Adding user to database
               .query(
-                `INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,avatar,code) VALUES ('${user.name}', '${user.email}' , '${user.password}', '${user.e1}', '${user.e2}', '${user.e3}', '${user.e4}', '${user.e5}', '${user.avatar}', '${user.code}');`
+                `INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,userName,token) VALUES ('${user.name}', '${user.email}' , '${user.password}', '${user.e1}', '${user.e2}', '${user.e3}', '${user.e4}', '${user.e5}', '${user.userName}', '${user.token}');`
                 // To add more event update code here. Updates required at two places
               )
               .then((data) => {
-                //Generating token for email using private key
-                const token = jwt.sign(
-                  {
-                    email: email,
-                  },
-                  process.env.PRIVATE_KEY
-                );
-
                 //Sending token to frontend
                 res.status(201).json({
                   message: "User signed up successfully!",
@@ -71,7 +89,7 @@ exports.signUp = (req, res) => {
               })
               .catch((err) => {
                 res.status(500).json({
-                  error: "Database error occurred in signUp! 1",
+                  error: "Database error occurred in signUp! 2",
                 });
               });
           }
@@ -80,7 +98,7 @@ exports.signUp = (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
-        error: "Database error occurred in signUp! 2",
+        error: "Database error occurred in signUp! 3",
       });
     });
 };
@@ -92,8 +110,7 @@ exports.signIn = (req, res) => {
     //Getting user data from database
     .query(`SELECT * FROM users WHERE email = '${email}';`)
     .then((data) => {
-      userData = data.rows;
-
+      var userData = data.rows;
       //If user does not exist
       if (userData.length === 0) {
         res.status(404).json({
@@ -109,14 +126,9 @@ exports.signIn = (req, res) => {
           }
 
           //If password matches
-          else if (result === true) {
-            //Generating token
-            const token = jwt.sign(
-              {
-                email: email,
-              },
-              process.env.PRIVATE_KEY
-            );
+          else if (result == true) {
+            //Getting token
+            const token = userData[0].token;
             //sending token to frontend
             res.status(200).json({
               message: "User signed in successfully!",

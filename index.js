@@ -11,6 +11,7 @@ app.use(cors());
 const authRoutes = require("./routes/auth"); // For signin and signup
 const event = require("./routes/event"); // For registering, unregistering and checking status of events
 const admin = require("./routes/admin"); // For authentication of admin, checking registration and open and close events
+const userData = require("./routes/userData"); // For getting and updating user data
 
 const port = process.env.PORT || 8000; // Defining port for server
 
@@ -32,3 +33,4 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/event", event);
 app.use("/admin", admin);
+app.use("/userData", userData);
