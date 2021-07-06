@@ -5,8 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../conifgs/db");
 
-var count = 0; // to count no. of user registered
-
 //SignUp Function
 exports.signUp = (req, res) => {
   const { name, email, password } = req.body; // Data from req
@@ -34,7 +32,6 @@ exports.signUp = (req, res) => {
           } else {
             let code = ["RTX7", "ARX3", "DRL6", "ADR1", "TSP8", "SFJ2", "WDP9"]; //Array of all possible prefix of code
             code = code[Math.floor(Math.random() * 6) + 0]; //Assigning random prefix
-            code = code + count + 147; //Adding unique suffix
             count += 1;
             let avatar = Math.floor(Math.random() * 5) + 1; //Code for user avatar
             const user = {
