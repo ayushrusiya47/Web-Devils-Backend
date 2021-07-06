@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../conifgs/db");
 
+var count = 0; // to count no. of user registered
+
 //SignUp Function
 exports.signUp = (req, res) => {
   const { name, email, password } = req.body; // Data from req
@@ -30,6 +32,11 @@ exports.signUp = (req, res) => {
               error: "Hashing Failed in signUp",
             });
           } else {
+            let code = ["RTX7", "ARX3", "DRL6", "ADR1", "TSP8", "SFJ2", "WDP9"]; //Array of all possible prefix of code
+            code = code[Math.floor(Math.random() * 6) + 0]; //Assigning random prefix
+            code = code + count + 147; //Adding unique suffix
+            count += 1;
+            let avatar = Math.floor(Math.random() * 5) + 1; //Code for user avatar
             const user = {
               name,
               email,
@@ -39,13 +46,15 @@ exports.signUp = (req, res) => {
               e3: "FALSE",
               e4: "FALSE",
               e5: "False",
+              avatar,
+              code,
               // To add more event update code here.
             }; // Data of new user
 
             client
               // Adding user to database
               .query(
-                `INSERT INTO users (name, email, password,e1,e2,e3,e4,e5) VALUES ('${user.name}', '${user.email}' , '${user.password}', '${user.e1}', '${user.e2}', '${user.e3}', '${user.e4}', '${user.e5}');`
+                `INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,avatar,code) VALUES ('${user.name}', '${user.email}' , '${user.password}', '${user.e1}', '${user.e2}', '${user.e3}', '${user.e4}', '${user.e5}', '${user.avatar}', '${user.code}');`
                 // To add more event update code here. Updates required at two places
               )
               .then((data) => {
