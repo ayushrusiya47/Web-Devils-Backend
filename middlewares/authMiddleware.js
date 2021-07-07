@@ -18,7 +18,7 @@ exports.verifyToken = (req, res, next) => {
       const userName = decoded.userName;
       const code = decoded.code;
       const text =
-        "SELECT * FROM users WHERE email = '$1' AND token = '$2' AND userName = '$3'";
+        "SELECT * FROM users WHERE email = $1 AND token = $2 AND userName = $3";
       const values = [email, token, userName];
       client
         //Checking if decoded data and token is in database
@@ -39,7 +39,6 @@ exports.verifyToken = (req, res, next) => {
         .catch((err) => {
           res.status(500).json({
             error: "Database error occured in verifyToken middleware",
-            e: err,
           });
         });
     }
