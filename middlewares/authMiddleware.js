@@ -39,6 +39,7 @@ exports.verifyToken = (req, res, next) => {
         .catch((err) => {
           res.status(500).json({
             error: "Database error occured in verifyToken middleware",
+            e: err,
           });
         });
     }
