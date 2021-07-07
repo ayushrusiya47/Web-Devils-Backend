@@ -5,6 +5,8 @@ const client = require("../conifgs/db");
 exports.register = (req, res) => {
   const { event } = req.body;
   var email = req.email;
+
+  var text = "UPDATE users SET ${event} = TRUE WHERE email = $1"; //DOUBT
   client
     //Updating value
     .query(
@@ -44,9 +46,12 @@ exports.unregister = (req, res) => {
 
 exports.status = (req, res) => {
   var email = req.email;
+
+  var text = "SELECT * FROM users WHERE email = $1;";
+  var values = [email];
   client
     //Fetching data
-    .query(`SELECT * FROM users WHERE email = '${email}';`)
+    .query(text, values)
     .then((data) => {
       userData = data.rows[0];
       const sta = {
@@ -66,56 +71,57 @@ exports.status = (req, res) => {
     });
 };
 
-exports.registerAll = (req, res) => {
-  var email = req.email;
-  client
-    //Updating values
-    .query(
-      `UPDATE users
-      SET e1 = TRUE,
-      e2 = TRUE,
-      e3 = TRUE,
-      e4 = TRUE,
-      e5 = TRUE
-      WHERE email = '${email}'`
-    ) // To add more event update code here.
-    .then(() => {
-      res.sendStatus(204); //Update successful
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: "Database error occurred in registerAll events!",
-      });
-    });
-};
+// exports.registerAll = (req, res) => {
+//   var email = req.email;
+//   client
+//     //Updating values
+//     .query(
+//       `UPDATE users
+//       SET e1 = TRUE,
+//       e2 = TRUE,
+//       e3 = TRUE,
+//       e4 = TRUE,
+//       e5 = TRUE
+//       WHERE email = '${email}'`
+//     ) // To add more event update code here.
+//     .then(() => {
+//       res.sendStatus(204); //Update successful
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         error: "Database error occurred in registerAll events!",
+//       });
+//     });
+// };
 
-exports.unregisterAll = (req, res) => {
-  var email = req.email;
-  client
-    //Updating values
-    .query(
-      `UPDATE users
-      SET e1 = FALSE,
-      e2 = FALSE,
-      e3 = FALSE,
-      e4 = FALSE,
-      e5 = False
-      WHERE email = '${email}'`
-    )
-    .then(() => {
-      res.sendStatus(204); //Update successful
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: "Database error occurred in unregisterAll events!",
-      });
-    });
-};
+// exports.unregisterAll = (req, res) => {
+//   var email = req.email;
+//   client
+//     //Updating values
+//     .query(
+//       `UPDATE users
+//       SET e1 = FALSE,
+//       e2 = FALSE,
+//       e3 = FALSE,
+//       e4 = FALSE,
+//       e5 = False
+//       WHERE email = '${email}'`
+//     )
+//     .then(() => {
+//       res.sendStatus(204); //Update successful
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         error: "Database error occurred in unregisterAll events!",
+//       });
+//     });
+// };
 
 exports.openStatus = (req, res) => {
+  var text = "SELECT * FROM event";
   client
     //Fetching data
-    .query(`SELECT * FROM event`)
+    .query(text)
     .then((data) => {
       userData = data.rows[0];
       res.status(200).json(userData);

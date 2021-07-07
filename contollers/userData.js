@@ -22,12 +22,11 @@ exports.changeCode = (req, res) => {
     },
     process.env.PRIVATE_KEY
   );
+
+  var text = "UPDATE users SET token = $1 WHERE email = $2";
+  var values = [token, req.email];
   client
-    .query(
-      `UPDATE users
-  SET token = '${token}'
-  WHERE email = '${req.email}'`
-    )
+    .query(text, values)
     .then(() => {
       res.status(200).json({
         token: token,

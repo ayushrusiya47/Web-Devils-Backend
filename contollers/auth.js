@@ -8,38 +8,21 @@ const client = require("../conifgs/db");
 //SignUp Function
 exports.signUp = (req, res) => {
   const { name, email, userName, password } = req.body; // Data from req
-
+  var text = "SELECT * FROM users WHERE email = $1 OR userName = $2";
+  var values = [email, userName];
   client
-    .query(`SELECT * FROM users WHERE email = '${email}';`) //Checking database for already registered email
+    .query(text, values) //Checking database for already registered email
     .then((data) => {
       var rows = data.rows;
-
-      client
-        .query(`SELECT * FROM users WHERE userName = '${userName}';`) //Checking database for already registered email
-        .then((data) => {
-          var rows1 = data.rows;
-        })
-        .catch((err) => {
-          res.status(500).json({
-            error: "Database error occurred in signUp! 1",
-          });
-        });
 
       // If email is already registered
       if (rows.length !== 0) {
         res.status(403).json({
-          error: "Email already in use.",
+          error: "Credentials already in use.",
         });
       }
 
-      // If userName is already registered
-      if (rows.length !== 0) {
-        res.status(403).json({
-          error: "userName already in use.",
-        });
-      }
-
-      // If email and username are not registered then
+      // If credentials are not already registered then
       else {
         //hashing password
         bcrypt.hash(password, 10, (err, hash) => {
@@ -74,12 +57,23 @@ exports.signUp = (req, res) => {
               // To add more event update code here.
             }; // Data of new user
 
+            text =
+              "INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,userName,token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);";
+            values = [
+              user.name,
+              user.email,
+              user.password,
+              user.e1,
+              user.e2,
+              user.e3,
+              user.e4,
+              user.e5,
+              user.userName,
+              user.token,
+            ];
             client
               // Adding user to database
-              .query(
-                `INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,userName,token) VALUES ('${user.name}', '${user.email}' , '${user.password}', '${user.e1}', '${user.e2}', '${user.e3}', '${user.e4}', '${user.e5}', '${user.userName}', '${user.token}');`
-                // To add more event update code here. Updates required at two places
-              )
+              .query(text, values) // To add more event update code here. Updates required at two places
               .then((data) => {
                 //Sending token to frontend
                 res.status(201).json({
@@ -88,8 +82,9 @@ exports.signUp = (req, res) => {
                 });
               })
               .catch((err) => {
+                console.error(err);
                 res.status(500).json({
-                  error: "Database error occurred in signUp! 2",
+                  error: "Database error occurred in signUp! 1",
                 });
               });
           }
@@ -98,7 +93,7 @@ exports.signUp = (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
-        error: "Database error occurred in signUp! 3",
+        error: "Database error occurred in signUp! 2",
       });
     });
 };
@@ -106,9 +101,11 @@ exports.signUp = (req, res) => {
 exports.signIn = (req, res) => {
   const { email, password } = req.body; //Data from req
 
+  var text = "SELECT * FROM users WHERE email = $1;";
+  var values = [email];
   client
     //Getting user data from database
-    .query(`SELECT * FROM users WHERE email = '${email}';`)
+    .query(text, values)
     .then((data) => {
       var userData = data.rows;
       //If user does not exist
