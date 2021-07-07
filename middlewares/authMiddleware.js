@@ -17,11 +17,12 @@ exports.verifyToken = (req, res, next) => {
       const email = decoded.email;
       const userName = decoded.userName;
       const code = decoded.code;
+      const text =
+        "SELECT * FROM users WHERE email = '$1' AND token = '$2' AND userName = '$3'";
+      const values = [email, token, userName];
       client
         //Checking if decoded data and token is in database
-        .query(
-          `SELECT * FROM users WHERE email = '${email}' AND token = '${token}' AND userName = '${userName}';`
-        )
+        .query(text, values)
         .then((data) => {
           //If email is not in database
           if (data.rows.length === 0) {
