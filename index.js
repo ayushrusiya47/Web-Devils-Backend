@@ -6,11 +6,14 @@ const cookieParser = require("cookie-parser");
 const client = require("./conifgs/db"); // Database client
 const app = express();
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:8000", "https://web-devil.herokuapp.com"],
+    origin: [
+      "http://localhost:8000",
+      "https://web-devil.herokuapp.com",
+      "http://127.0.0.1:5502",
+    ],
     credentials: true,
   })
 );

@@ -4,6 +4,22 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../conifgs/db");
+const express = require("express"); // For server
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: [
+      // "http://localhost:8000",
+      "https://web-devil.herokuapp.com",
+      // "http://127.0.0.1:5502",
+    ],
+    credentials: true,
+  })
+);
 
 //SignUp Function
 exports.signUp = (req, res) => {
@@ -75,15 +91,18 @@ exports.signUp = (req, res) => {
               // Adding user to database
               .query(text, values) // To add more event update code here. Updates required at two places
               .then((data) => {
-                res.cookie("token", token, {
-                  expires: new Date(Date.now() + 1),
-                  secure: true, // set to true if your using https
-                  httpOnly: true,
-                });
                 // Sending token to frontend
-                res.status(201).json({
-                  message: "User signed up successfully!",
-                });
+                res
+                  .status(201)
+                  .cookie("token", token, {
+                    expires: new Date(Date.now() + 67),
+                    secure: true, // set to true if your using https
+                    httpOnly: true,
+                    sameSite: "none",
+                  })
+                  .json({
+                    message: "User signed up successfully!",
+                  });
               })
               .catch((err) => {
                 console.error(err);

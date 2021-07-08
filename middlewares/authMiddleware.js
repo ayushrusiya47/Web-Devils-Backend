@@ -4,11 +4,13 @@ const client = require("../conifgs/db");
 const jwt = require("jsonwebtoken");
 
 exports.verifyToken = (req, res, next) => {
-  const token = req.cookies.token || " "; // Get token from headers
+  const token = req.cookies; // Get token from headers
+  console.log(token);
 
   //Verifying token and extracting email using private key
   jwt.verify(token, process.env.PRIVATE_KEY, (err, decoded) => {
     if (err) {
+      console.error(err);
       res.status(500).json({
         error: "JWT verification error in verifyToken middleware",
       });
