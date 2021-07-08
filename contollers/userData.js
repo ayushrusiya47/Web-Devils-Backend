@@ -3,10 +3,12 @@
 const client = require("../conifgs/db");
 const jwt = require("jsonwebtoken");
 
-exports.getCode = (req, res) => {
+exports.getData = (req, res) => {
   var code = req.code;
   res.status(200).json({
     code: code,
+    email: req.email,
+    name: req.userName,
   });
 };
 
