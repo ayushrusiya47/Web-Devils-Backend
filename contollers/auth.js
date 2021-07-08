@@ -77,7 +77,7 @@ exports.signUp = (req, res) => {
               .then((data) => {
                 res.cookie("token", token, {
                   expires: new Date(Date.now() + 1),
-                  secure: false, // set to true if your using https
+                  secure: true, // set to true if your using https
                   httpOnly: true,
                 });
                 // Sending token to frontend
