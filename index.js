@@ -2,10 +2,18 @@
 require("dotenv").config(); // For setting env variables
 const express = require("express"); // For server
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const client = require("./conifgs/db"); // Database client
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://localhost:8000"],
+    credentials: true,
+  })
+);
 
 // Aquiring routes
 const authRoutes = require("./routes/auth"); // For signin and signup

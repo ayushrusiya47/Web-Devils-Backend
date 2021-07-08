@@ -75,10 +75,14 @@ exports.signUp = (req, res) => {
               // Adding user to database
               .query(text, values) // To add more event update code here. Updates required at two places
               .then((data) => {
-                //Sending token to frontend
+                res.cookie("token", token, {
+                  expires: new Date(Date.now() + 1),
+                  secure: false, // set to true if your using https
+                  httpOnly: true,
+                });
+                // Sending token to frontend
                 res.status(201).json({
                   message: "User signed up successfully!",
-                  token: token,
                 });
               })
               .catch((err) => {

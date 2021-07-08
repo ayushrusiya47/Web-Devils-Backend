@@ -4,7 +4,7 @@ const client = require("../conifgs/db");
 const jwt = require("jsonwebtoken");
 
 exports.verifyToken = (req, res, next) => {
-  const token = req.headers.authorization; // Get token from headers
+  const token = req.cookies.token || " "; // Get token from headers
 
   //Verifying token and extracting email using private key
   jwt.verify(token, process.env.PRIVATE_KEY, (err, decoded) => {
@@ -27,7 +27,7 @@ exports.verifyToken = (req, res, next) => {
           //If email is not in database
           if (data.rows.length === 0) {
             res.status(401).json({
-              error: "Invalid token please SignIn",
+              error: "Invalid token please SignIn again",
             });
           } else {
             req.email = email; //Storing email in req
