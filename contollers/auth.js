@@ -148,3 +148,56 @@ exports.signIn = (req, res) => {
       });
     });
 };
+
+exports.changePassword = (req, res) => {
+  const email = req.email;
+  const password = req.body.password;
+  const newPassword = req.body.newPassword;
+  var text = "SELECT * FROM users WHERE email = $1";
+  var values = [email];
+  client
+    .query(text, values)
+    .then((data) => {
+      var userData = data.rows;
+      if (userData.length !== 0) {
+        bcrypt.compare(password, userData[0].password, (err, result) => {
+          if (err) {
+            res.status(500).json({
+              error: "Password comparision failed in password change",
+            });
+          }
+          //If password matches
+          else if (result == true) {
+            bcrypt.hash(newPassword, 10, (err, hash) => {
+              if (err) {
+                console.error(err);
+                res.status(500).json({
+                  error: "Hashing Failed in password change",
+                });
+              } else {
+                var text = "UPDATE users SET password = $1 WHERE email = $2";
+                var values = [hash, email];
+                client
+                  .query(text, values)
+                  .then((data) => {
+                    res.sendStatus(204);
+                  })
+                  .catch((err) => {
+                    res.status(500).json({
+                      error: "Database error occurred password change",
+                    });
+                  });
+              }
+            });
+          } else {
+            res.status(401).json({
+              error: "Incorrect password!",
+            });
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "database error" });
+    });
+};
