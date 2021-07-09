@@ -49,13 +49,12 @@ exports.signUp = (req, res) => {
               e2: "FALSE",
               e3: "FALSE",
               e4: "FALSE",
-              e5: "False",
               userName,
               code,
             }; // Data of new user
 
             text =
-              "INSERT INTO users ( email, password,e1,e2,e3,e4,e5,userName,code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);";
+              "INSERT INTO users ( email, password,e1,e2,e3,e4,userName,code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);";
             values = [
               user.email,
               user.password,
@@ -63,7 +62,6 @@ exports.signUp = (req, res) => {
               user.e2,
               user.e3,
               user.e4,
-              user.e5,
               user.userName,
               user.code,
             ];
