@@ -51,7 +51,7 @@ exports.signUp = (req, res) => {
               e4: "FALSE",
               e5: "False",
               userName,
-              token,
+              code,
               // To add more event update code here.
             }; // Data of new user
 
