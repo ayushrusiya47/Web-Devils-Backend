@@ -7,7 +7,7 @@ const client = require("../conifgs/db");
 
 //SignUp Function
 exports.signUp = (req, res) => {
-  const { name, email, userName, password } = req.body; // Data from req
+  const { email, userName, password } = req.body; // Data from req
   var text = "SELECT * FROM users WHERE email = $1 OR userName = $2";
   var values = [email, userName];
   client
@@ -38,13 +38,11 @@ exports.signUp = (req, res) => {
               {
                 email,
                 userName,
-                code,
               },
               process.env.PRIVATE_KEY
             );
 
             const user = {
-              name,
               email,
               password: hash,
               e1: "FALSE",
@@ -58,9 +56,8 @@ exports.signUp = (req, res) => {
             }; // Data of new user
 
             text =
-              "INSERT INTO users (name, email, password,e1,e2,e3,e4,e5,userName,token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);";
+              "INSERT INTO users ( email, password,e1,e2,e3,e4,e5,userName,code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);";
             values = [
-              user.name,
               user.email,
               user.password,
               user.e1,
@@ -69,7 +66,7 @@ exports.signUp = (req, res) => {
               user.e4,
               user.e5,
               user.userName,
-              user.token,
+              user.code,
             ];
             client
               // Adding user to database
@@ -124,8 +121,14 @@ exports.signIn = (req, res) => {
 
           //If password matches
           else if (result == true) {
-            //Getting token
-            const token = userData[0].token;
+            //Generating token
+            const token = jwt.sign(
+              {
+                email,
+                userName: userData.userName,
+              },
+              process.env.PRIVATE_KEY
+            );
             //sending token to frontend
             res.status(200).json({
               message: "User signed in successfully!",

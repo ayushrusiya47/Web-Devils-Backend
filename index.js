@@ -13,7 +13,7 @@ const event = require("./routes/event"); // For registering, unregistering and c
 const admin = require("./routes/admin"); // For authentication of admin, checking registration and open and close events
 const userData = require("./routes/userData"); // For getting and updating user data
 
-const port = process.env.PORT || 8000; // Defining port for server
+const port = process.env.PORT || 8002; // Defining port for server
 
 //Starting server
 app.listen(port, () => {

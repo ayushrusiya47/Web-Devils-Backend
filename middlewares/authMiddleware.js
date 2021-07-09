@@ -16,24 +16,22 @@ exports.verifyToken = (req, res, next) => {
     } else {
       const email = decoded.email;
       const userName = decoded.userName;
-      const code = decoded.code;
-      const text =
-        "SELECT * FROM users WHERE email = $1 AND token = $2 AND userName = $3";
-      const values = [email, token, userName];
+      const text = "SELECT * FROM users WHERE email = $1 AND userName = $2";
+      const values = [email, userName];
       client
-        //Checking if decoded data and token is in database
+        //Checking if decoded data is in database
         .query(text, values)
         .then((data) => {
-          //If email is not in database
+          //If decoded data is not in database
           if (data.rows.length === 0) {
             res.status(401).json({
               error: "Invalid token please SignIn",
             });
           } else {
             req.email = email; //Storing email in req
-            req.code = code; //Storing code in req
             req.userName = userName; //Storing userName in req
-            next(); //Next only after token is verified and email is in database
+            req.code = data.rows[0].code; //Storing code in req
+            next(); //Next only after token is verified and decoded data is in database
           }
         })
         .catch((err) => {

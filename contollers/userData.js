@@ -4,9 +4,8 @@ const client = require("../conifgs/db");
 const jwt = require("jsonwebtoken");
 
 exports.getData = (req, res) => {
-  var code = req.code;
   res.status(200).json({
-    code: code,
+    code: req.code,
     email: req.email,
     name: req.userName,
   });
@@ -16,23 +15,13 @@ exports.changeCode = (req, res) => {
   email = req.email;
   userName = req.userName;
   code = req.body.code;
-  const token = jwt.sign(
-    {
-      email,
-      userName,
-      code,
-    },
-    process.env.PRIVATE_KEY
-  );
 
-  var text = "UPDATE users SET token = $1 WHERE email = $2";
-  var values = [token, req.email];
+  var text = "UPDATE users SET code = $1 WHERE email = $2";
+  var values = [code, email];
   client
     .query(text, values)
     .then(() => {
-      res.status(200).json({
-        token: token,
-      });
+      res.sendStatus(204);
     })
     .catch((err) => {
       console.log(err);
