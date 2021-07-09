@@ -55,7 +55,6 @@ exports.status = (req, res) => {
         e2: userData.e2,
         e3: userData.e3,
         e4: userData.e4,
-        e5: userData.e5,
       }; //Status of events
       // To add more event update code here.
       res.status(200).json(sta);
@@ -93,7 +92,6 @@ exports.openStatus = (req, res) => {
 //       e2 = TRUE,
 //       e3 = TRUE,
 //       e4 = TRUE,
-//       e5 = TRUE
 //       WHERE email = '${email}'`
 //     ) // To add more event update code here.
 //     .then(() => {
@@ -116,7 +114,6 @@ exports.openStatus = (req, res) => {
 //       e2 = FALSE,
 //       e3 = FALSE,
 //       e4 = FALSE,
-//       e5 = False
 //       WHERE email = '${email}'`
 //     )
 //     .then(() => {
