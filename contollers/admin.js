@@ -8,7 +8,7 @@ exports.getList = (req, res) => {
   email = req.email;
   if (email == "Admin@prospero2.0.com") {
     var text =
-      "SELECT username, email, e1, e2, e3, e4 ,e5 FROM users ORDER BY username;";
+      "SELECT username, email, e1, e2, e3, e4  FROM users ORDER BY username;";
 
     client
       //Fetching users from database ordered by email
