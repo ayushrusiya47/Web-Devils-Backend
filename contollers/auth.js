@@ -122,10 +122,11 @@ exports.signIn = (req, res) => {
           //If password matches
           else if (result == true) {
             //Generating token
+            console.log(userData[0]);
             const token = jwt.sign(
               {
                 email,
-                userName: userData[0].userName,
+                userName: userData[0].username,
               },
               process.env.PRIVATE_KEY
             );

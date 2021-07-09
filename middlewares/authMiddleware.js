@@ -18,6 +18,7 @@ exports.verifyToken = (req, res, next) => {
       const userName = decoded.userName;
       const text = "SELECT * FROM users WHERE email = $1 AND userName = $2";
       const values = [email, userName];
+      console.log(values);
       client
         //Checking if decoded data is in database
         .query(text, values)

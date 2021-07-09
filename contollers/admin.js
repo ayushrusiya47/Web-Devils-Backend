@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 
 // For getting list of users for fest or particular event at a page for given items per page
 exports.getList = (req, res) => {
-  var text = "SELECT name, email, e1, e2, e3, e4 ,e5 FROM users ORDER BY name;";
+  var text =
+    "SELECT username, email, e1, e2, e3, e4 ,e5 FROM users ORDER BY email;";
 
   client
     //Fetching users from database ordered by email
