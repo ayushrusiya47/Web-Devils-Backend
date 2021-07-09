@@ -13,9 +13,9 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      // "http://localhost:8000",
-      "https://web-devil.herokuapp.com",
-      // "http://127.0.0.1:5502",
+      "http://localhost:8000",
+      "https://test-web-devil.herokuapp.com",
+      "http://127.0.0.1:5502",
     ],
     credentials: true,
   })
